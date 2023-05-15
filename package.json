@@ -1,0 +1,28 @@
+{
+  "name": "issuer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node -r dotenv/config server.js",
+    "dev": "nodemon -r dotenv/config server.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+  },
+  "dependencies": {
+    "@digitalcredentials/status-list-manager-git": "github:digitalcredentials/status-list-manager-git#import-status-list-client-from-sign-and-verify",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1",
+    "qrcode": "^1.5.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nock": "^13.3.1",
+    "nodemon": "^2.0.21",
+    "sinon": "^15.0.4",
+    "supertest": "^6.3.3"
+  }
+}
