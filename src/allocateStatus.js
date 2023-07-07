@@ -1,9 +1,10 @@
-import { getStatusManager } from './getStatusManager.js';
-const statusManager = await getStatusManager()
+import { getStatusManager } from './status.js';
 
-export default allocateStatus = async (verifiableCredential) => {
+const allocateStatus = async (verifiableCredential) => {
+    const statusManager = await getStatusManager()
     return verifiableCredential.credentialStatus ? 
         verifiableCredential :
         await statusManager.allocateStatus(verifiableCredential)
 }
 
+export default allocateStatus

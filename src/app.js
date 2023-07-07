@@ -1,12 +1,14 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import updateStatus from './updateStatus.js'
-import allocateStatus from './allocateStatus.js';
-
+import { initializeStatusManager } from './status.js';
+import revoke from './revoke.js'
+import allocateStatus from './allocateStatus.js'
 
 export async function build(opts = {}) {
 
+    await initializeStatusManager()
+    
     var app = express();
 
     app.use(logger('dev'));
@@ -15,22 +17,15 @@ export async function build(opts = {}) {
     app.use(cors())
 
     app.get('/', function (req, res, next) {
-        res.send({ message: 'hello' })
+        res.send({ message: 'status-service server status: ok.' })
     });
 
-    // get current status
-    app.get("/credentials/status", 
-        async (req, res) => {
-            res.send({ message: 'valid' })
-        }
-    )
-
     // allocate status
-    app.post("/credentials/status", 
+    app.post("/credentials/status/allocate", 
         async (req, res) => {
             try {
                 const vc = req.body;
-                const vcWithStatus = await allocateStatus(unSignedVC)
+                const vcWithStatus = await allocateStatus(vc)
                 return res.json(vcWithStatus)
             } catch (error) {
                 console.log(error);
@@ -38,19 +33,19 @@ export async function build(opts = {}) {
             }
         })
 
-    // update status
     // the body will look like:  {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
     app.post("/credentials/status", 
         async (req, res) => {
             try {
-                
+                 const instanceId = req.params.instanceId 
+            
                 if (!req.body || !Object.keys(req.body).length ) return res.status(400).send('No update request was provided in the body')
+                
                 const {credentialId, credentialStatus} = req.body;
                 const status = credentialStatus[0].status
                 const statusType = credentialStatus[0].type
-                const authHeader = req.headers.authorization
                 if (statusType === 'StatusList2021Credential') {
-                    const statusResponse = await updateStatus(credentialId, status, authHeader)
+                    const statusResponse = await revoke(credentialId, status)
                     return res.status(statusResponse.code).send(statusResponse.message)
                 } else {
                     return res.status(400).send('StatusList2021Credential is the only supported revocation mechanism.')
@@ -60,6 +55,8 @@ export async function build(opts = {}) {
                 return res.status(500).json(error);
             }
         })
+
+  
 
     return app;
 

@@ -1,29 +1,29 @@
-let CONFIG;
 
-export async function setConfig() {
+let CONFIG;
+const defaultPort = 4008
+
+export function setConfig() {
   CONFIG = parseConfig();
 }
 
 function parseConfig() {
-  if (!process.env.PORT) {
-    throw new Error("Environment variable 'PORT' is not set");
-  }
-
-  return Object.freeze({
-    enableHttpsForDev: process.env.ENABLE_HTTPS_FOR_DEV?.toLowerCase() === 'true',
-    port: parseInt(process.env.PORT),
-    credStatusDidSeed: process.env.CRED_STATUS_DID_SEED,
-    credStatusService: process.env.CRED_STATUS_SERVICE,
-    credStatusAccessToken: process.env.CRED_STATUS_ACCESS_TOKEN, 
-    credStatusRepoName: process.env.CRED_STATUS_REPO_NAME, 
-    credStatusMetaRepoName: process.env.CRED_STATUS_META_REPO_NAME, 
-    credStatusRepoOrgName: process.env.CRED_STATUS_REPO_ORG_NAME
+  const env = process.env
+  const config = Object.freeze({
+    enableHttpsForDev: env.ENABLE_HTTPS_FOR_DEV?.toLowerCase() === 'true',
+    port: env.PORT ? parseInt(env.PORT) : defaultPort,
+    credStatusService: env.CRED_STATUS_SERVICE,
+    credStatusDidSeed: env.CRED_STATUS_DID_SEED,
+    credStatusAccessToken: env.CRED_STATUS_ACCESS_TOKEN, 
+    credStatusRepoName: env.CRED_STATUS_REPO_NAME, 
+    credStatusMetaRepoName: env.CRED_STATUS_META_REPO_NAME, 
+    credStatusOwnerAccountName: env.CRED_STATUS_REPO_OWNER
   });
+  return config
 }
 
 export function getConfig() {
   if (!CONFIG) {
-    setConfig()
+     setConfig()
   }
   return CONFIG;
 }

@@ -9,6 +9,7 @@ const run = async () => {
   const { port, enableHttpsForDev } = getConfig();
 
   const app = await build();
+  
   if (enableHttpsForDev) {
     https
       .createServer(
