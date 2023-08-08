@@ -9,7 +9,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules npx mocha --timeout 10000 -r dotenv/config dotenv_config_path=src/test-fixtures/.env.testing src/app.test.js "
   },
   "dependencies": {
-    "@digitalcredentials/credential-status-manager-git": "github:digitalcredentials/credential-status-manager-git",
+    "@digitalcredentials/credential-status-manager-git": "^1.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
