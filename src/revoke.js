@@ -7,10 +7,10 @@ const revoke = async (credentialId, credentialStatus) => {
             credentialId,
             credentialStatus
         });
-        return { code: 200, message: "Credential status successfully updated" }
+        return { code: 200, message: "Credential status successfully updated." }
     } catch (e) {
         if (e.message.includes("Unable to find credential with given ID")) {
-            return {code: 404, message: "Credential Not Found"}
+            return {code: 404, message: "Credential ID not found."}
         }
         return { code: 400, message: "Bad Request" }
     }
