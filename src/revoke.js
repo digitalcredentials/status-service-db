@@ -1,8 +1,8 @@
-import { getStatusManager } from './status.js';
+import status from './status.js';
 
 const revoke = async (credentialId, credentialStatus) => {
     try {
-        const statusManager = await getStatusManager()
+        const statusManager = await status.getStatusManager()
         const statusCredential = await statusManager.updateStatus({
             credentialId,
             credentialStatus

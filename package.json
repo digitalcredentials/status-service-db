@@ -1,7 +1,6 @@
 {
-  "name": "issuer",
+  "name": "@digitalcredentials/status-service",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config server.js",
@@ -20,8 +19,8 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
-    "nock": "^13.3.1",
     "nodemon": "^2.0.21",
+    "sinon": "^15.2.0",
     "supertest": "^6.3.3"
   }
 }

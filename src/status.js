@@ -11,23 +11,28 @@ const {
 
 let STATUS_LIST_MANAGER;
 
-export async function initializeStatusManager() {
-    if (!STATUS_LIST_MANAGER) {
-        STATUS_LIST_MANAGER = await createStatusManager({
-            service: 'github',
-            repoName: credStatusRepoName,
-            metaRepoName: credStatusMetaRepoName,
-            ownerAccountName: credStatusOwnerAccountName,
-            repoAccessToken: credStatusAccessToken,
-            metaRepoAccessToken: credStatusAccessToken,
-            didMethod: 'key',
-            didSeed: credStatusDidSeed,
-            signUserCredential: false,
-            signStatusCredential: true
-        });
-      }
+/* we allow passing in a status manager, for testing */
+async function initializeStatusManager(statusManager) {
+    if (statusManager) {
+        STATUS_LIST_MANAGER = statusManager
+    } else if (!STATUS_LIST_MANAGER) {
+            STATUS_LIST_MANAGER = await createStatusManager({
+                service: 'github',
+                repoName: credStatusRepoName,
+                metaRepoName: credStatusMetaRepoName,
+                ownerAccountName: credStatusOwnerAccountName,
+                repoAccessToken: credStatusAccessToken,
+                metaRepoAccessToken: credStatusAccessToken,
+                didMethod: 'key',
+                didSeed: credStatusDidSeed,
+                signUserCredential: false,
+                signStatusCredential: true
+            });
+    }
 }
 
-export function getStatusManager() {
+function getStatusManager() {
     return STATUS_LIST_MANAGER;
 }
+
+export default { initializeStatusManager, getStatusManager }

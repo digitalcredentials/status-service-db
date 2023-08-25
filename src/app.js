@@ -1,13 +1,13 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import { initializeStatusManager } from './status.js';
+import status from './status.js';
 import revoke from './revoke.js'
 import allocateStatus from './allocateStatus.js'
 
 export async function build(opts = {}) {
 
-    await initializeStatusManager()
+    await status.initializeStatusManager()
 
     var app = express();
 
@@ -25,6 +25,8 @@ export async function build(opts = {}) {
         async (req, res) => {
             try {
                 const vc = req.body;
+                if (!req.body || !Object.keys(req.body).length) return res.status(400).send({code: 400, message: 'A verifiable credential was not provided in the body.'})
+
                 const vcWithStatus = await allocateStatus(vc)
                 return res.json(vcWithStatus)
             } catch (error) {
@@ -37,8 +39,7 @@ export async function build(opts = {}) {
     app.post("/credentials/status",
         async (req, res) => {
             try {
-                const instanceId = req.params.instanceId
-
+                
                 if (!req.body || !Object.keys(req.body).length) return res.status(400).send({code: 400, message: 'No update request was provided in the body.'})
 
                 const { credentialId, credentialStatus } = req.body;
@@ -49,7 +50,7 @@ export async function build(opts = {}) {
                     await revoke(credentialId, status)
                     :
                     { code: 400, message: 'StatusList2021Credential is the only supported revocation mechanism.' }
-
+               
                 return res.status(statusResponse.code).send(statusResponse)
             } catch (error) {
                 console.log(error);
