@@ -66,7 +66,7 @@ The `/credentials/status/allocate' http endpoint is meant to be called from any 
 This express app can be run a few different ways:
 
 - with with the `start` script in package.json
-- directly from the DockerHub image:  `docker run -dp 4008:4008 digitalcredentials/status-service`
+- directly from the DockerHub image:  `docker run -dp 4008:4008 digitalcredentials/status-service:0.1.0`
 - with docker compose - see how we do that in the [DCC issuer-coordinator](https://github.com/digitalcredentials/issuer-coordinator)
 
 Note that to run this with Docker, you'll of course need to install Docker, which is very easy with the [Docker installers for Windows, Mac, and Linux](https://docs.docker.com/engine/install/).
@@ -199,6 +199,21 @@ Revocation is fully explained in the StatusList2021 specifivation and the git st
 ```
 
 Fundamentally, you are just posting up the id of the credential.
+
+
+## Versioning
+
+The status-service is primarily intended to run as a docker image within a docker compose network, typically as part of a flow that is orchestrated by the [DCC Issuer Coordinator](https://github.com/digitalcredentials/issuer-coordinator) and the [DCC Workflow Coordinator](https://github.com/digitalcredentials/workflow-coordinator). 
+
+For convenience we've published the images for the status-service and the other services used by the coordinators, as well as for the coordinators themselves, to Docker Hub so that you don't have to build them locally yourself from the github repositories.
+
+The images on Docker Hub will of course at times be updated to add new functionality and fix bugs. Rather than overwrite the default (`latest`) version on Docker Hub for each update, we've adopted the [Semantic Versioning Guidelines](https://semver.org) with our docker image tags.
+
+We DO NOT provide a `latest` tag so you must provide a tag name (i.e, the version number) for the images in your docker compose file.
+
+To ensure you've got compatible versions of the services and the coordinator, the `major` number for each should match. At the time of writing, the versions for each are at 0.1.0, and the `major` number (the leftmost number) agrees across all three.
+
+If you do ever want to work from the source code in the repository and build your own images, we've tagged the commits in Github that were used to build the corresponding Docker image. So a github tag of v0.1.0 coresponds to a docker image tag of 0.1.0
 
 ## Development
 
