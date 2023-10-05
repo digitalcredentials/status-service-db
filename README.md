@@ -12,6 +12,7 @@
 - [Usage](#usage)
   - [Allocate a status position](#allocate-status-position)
   - [Revoke](#revoke)
+- [Versioning](#versioning)
 - [Development](#development)
   - [Testing](#testing)
 - [Contribute](#contribute)
