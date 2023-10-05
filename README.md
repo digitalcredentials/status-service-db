@@ -34,7 +34,7 @@ There is a sample .env file provided called .env.example to help you get started
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
-| `PORT` | http port on which to run the express app | 4007 | no |
+| `PORT` | http port on which to run the express app | 4008 | no |
 | `CRED_STATUS_OWNER` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | no | yes if ENABLE_STATUS_ALLOCATION is true |
 | `CRED_STATUS_REPO_NAME` | name of the credential status repository | no | yes if ENABLE_STATUS_ALLOCATION is true |
 | `CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | no | yes if ENABLE_STATUS_ALLOCATION is true |
@@ -66,7 +66,7 @@ The `/credentials/status/allocate' http endpoint is meant to be called from any 
 This express app can be run a few different ways:
 
 - with with the `start` script in package.json
-- directly from the DockerHub image:  `docker run -dp 3000:4008 digitalcredentials/status-service`
+- directly from the DockerHub image:  `docker run -dp 4008:4008 digitalcredentials/status-service`
 - with docker compose - see how we do that in the [DCC issuer-coordinator](https://github.com/digitalcredentials/issuer-coordinator)
 
 Note that to run this with Docker, you'll of course need to install Docker, which is very easy with the [Docker installers for Windows, Mac, and Linux](https://docs.docker.com/engine/install/).
@@ -76,49 +76,52 @@ Note that to run this with Docker, you'll of course need to install Docker, whic
 You can now allocate status positions for verifiable credentials.  Try it out with this CURL command, which you simply paste into the terminal:
 
 ```
-curl --location 'http://localhost:3000/credentials/status/allocate/test' \
+curl --location 'http://localhost:4008/credentials/status/allocate' \
 --header 'Content-Type: application/json' \
---data-raw '{ 
+--data-raw '{
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json"
   ],
-  "id": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1", 
+  "id": "urn:uuid:2fe53dc9-b2ec-4939-9b2c-0d00f6663b6c",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
   ],
+  "name": "DCC Test Credential",
   "issuer": {
-    "id": "the issuer code will set this as the issuing DID", 
-    "type": "Profile",
-    "name": "DCC Test Issuer",
-    "description": "A test DID used to issue test credentials",
-    "url": "https://digitalcredentials.mit.edu",
-    "image": {
-	    "id": "https://certificates.cs50.io/static/success.jpg",
-	    "type": "Image"
-	  }	
+    "type": [
+      "Profile"
+    ],
+    "id": "did:key:z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q",
+    "name": "Digital Credentials Consortium Test Issuer",
+    "url": "https://dcconsortium.org",
+    "image": "https://user-images.githubusercontent.com/752326/230469660-8f80d264-eccf-4edd-8e50-ea634d407778.png"
   },
-  "issuanceDate": "2020-01-01T00:00:00Z", 
-  "expirationDate": "2025-01-01T00:00:00Z",
-  "name": "Successful Installation",
+  "issuanceDate": "2023-08-02T17:43:32.903Z",
   "credentialSubject": {
-      "type": "AchievementSubject",
-     "name": "Me!",
-     "achievement": {
-      	"id": "http://digitalcredentials.mit.edu",
-      	"type": "Achievement",
-      	"criteria": {
-        	"narrative": "Successfully installed the DCC issuer."
-      	},
-      	"description": "DCC congratulates you on your successful installation of the DCC Issuer.", 
-      	"name": "Successful Installation",
-      	"image": {
-	    	"id": "https://certificates.cs50.io/static/success.jpg",
-	    	"type": "Image"
-	  	}
+    "type": [
+      "AchievementSubject"
+    ],
+    "achievement": {
+      "id": "urn:uuid:bd6d9316-f7ae-4073-a1e5-2f7f5bd22922",
+      "type": [
+        "Achievement"
+      ],
+      "achievementType": "Diploma",
+      "name": "Badge",
+      "description": "This is a sample credential issued by the Digital Credentials Consortium to demonstrate the functionality of Verifiable Credentials for wallets and verifiers.",
+      "criteria": {
+        "type": "Criteria",
+        "narrative": "This credential was issued to a student that demonstrated proficiency in the Python programming language that occurred from **February 17, 2023** to **June 12, 2023**."
+      },
+      "image": {
+        "id": "https://user-images.githubusercontent.com/752326/214947713-15826a3a-b5ac-4fba-8d4a-884b60cb7157.png",
+        "type": "Image"
       }
-  	}
+    },
+    "name": "Jane Doe"
+  }
 }'
 ```
 
@@ -127,51 +130,64 @@ This should return the same credential but with an allocated status. It should l
 
 ```
 {
-	"@context": ["https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json", "https://w3id.org/vc/status-list/2021/v1", "https://w3id.org/security/suites/ed25519-2020/v1"],
-	"id": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1",
-	"type": ["VerifiableCredential", "OpenBadgeCredential"],
-	"issuer": {
-		"id": "did:key:z6Mkf2rgv7ef8FmLJ5Py87LMa7nofQgv6AstdkgsXiiCUJEy",
-		"type": "Profile",
-		"name": "DCC Test Issuer",
-		"description": "A test DID used to issue test credentials",
-		"url": "https://digitalcredentials.mit.edu",
-		"image": {
-			"id": "https://certificates.cs50.io/static/success.jpg",
-			"type": "Image"
-		}
-	},
-	"issuanceDate": "2020-01-01T00:00:00Z",
-	"expirationDate": "2025-01-01T00:00:00Z",
-	"name": "Successful Installation",
-	"credentialSubject": {
-		"type": "AchievementSubject",
-		"name": "Me!",
-		"achievement": {
-			"id": "http://digitalcredentials.mit.edu",
-			"type": "Achievement",
-			"criteria": {
-				"narrative": "Successfully installed the DCC issuer."
-			},
-			"description": "DCC congratulates you on your successful installation of the DCC Issuer.",
-			"name": "Successful Installation",
-			"image": {
-				"id": "https://certificates.cs50.io/static/success.jpg",
-				"type": "Image"
-			}
-		}
-	},
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json",
+        "https://w3id.org/vc/status-list/2021/v1",
+        "https://w3id.org/security/suites/ed25519-2020/v1"
+    ],
+    "id": "urn:uuid:2fe53dc9-b2ec-4939-9b2c-0d00f6663b6c",
+    "type": [
+        "VerifiableCredential",
+        "OpenBadgeCredential"
+    ],
+    "name": "DCC Test Credential",
+    "issuer": {
+        "type": [
+            "Profile"
+        ],
+        "id": "did:key:z6MknNQD1WHLGGraFi6zcbGevuAgkVfdyCdtZnQTGWVVvR5Q",
+        "name": "Digital Credentials Consortium Test Issuer",
+        "url": "https://dcconsortium.org",
+        "image": "https://user-images.githubusercontent.com/752326/230469660-8f80d264-eccf-4edd-8e50-ea634d407778.png"
+    },
+    "issuanceDate": "2023-08-02T17:43:32.903Z",
+    "credentialSubject": {
+        "type": [
+            "AchievementSubject"
+        ],
+        "achievement": {
+            "id": "urn:uuid:bd6d9316-f7ae-4073-a1e5-2f7f5bd22922",
+            "type": [
+                "Achievement"
+            ],
+            "achievementType": "Diploma",
+            "name": "Badge",
+            "description": "This is a sample credential issued by the Digital Credentials Consortium to demonstrate the functionality of Verifiable Credentials for wallets and verifiers.",
+            "criteria": {
+                "type": "Criteria",
+                "narrative": "This credential was issued to a student that demonstrated proficiency in the Python programming language that occurred from **February 17, 2023** to **June 12, 2023**."
+            },
+            "image": {
+                "id": "https://user-images.githubusercontent.com/752326/214947713-15826a3a-b5ac-4fba-8d4a-884b60cb7157.png",
+                "type": "Image"
+            }
+        },
+        "name": "Jane Doe"
+    },
     "credentialStatus": {
-        "id": "https://jchartrand.github.io/dcc-status-test/O92GZS2H21#1",
+        "id": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB#5",
         "type": "StatusList2021Entry",
         "statusPurpose": "revocation",
-        "statusListIndex": 1,
-        "statusListCredential": "https://jchartrand.github.io/dcc-status-test/O92GZS2H21"
+        "statusListIndex": 5,
+        "statusListCredential": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB"
     }
 }
 ```
 
-NOTE: CURL can get a bit clunky if you want to experiment, so you might consider trying [Postman](https://www.postman.com/downloads/) which makes it very easy to construct and send http calls.
+Now your next step would be to sign this Verifiable Credential. You could, for example, pass the VC (with its newly allocated status position) to the [DCC signing-service](https://github.com/digitalcredentials/signing-service) which will sign and return the signed copy.  To see how this is can all be coordinated, take a look at the [DCC issuer-coordinator](https://github.com/digitalcredentials/issuer-coordinator).
+
+NOTE: CURL can get a bit clunky if you want to experiment more (like say by changing what goes into the VC before signing), so you might consider trying [Postman](https://www.postman.com/downloads/) which makes it easier to construct and send http calls.
 
 
 ### Revoke
