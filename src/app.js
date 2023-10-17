@@ -4,6 +4,10 @@ import cors from 'cors';
 import status from './status.js';
 import revoke from './revoke.js'
 import allocateStatus from './allocateStatus.js'
+import accessLogger from './middleware/accessLogger.js';
+import errorHandler from './middleware/errorHandler.js';
+import errorLogger from './middleware/errorLogger.js';
+import invalidPathHandler from './middleware/invalidPathHandler.js';
 
 export async function build(opts = {}) {
 
@@ -11,7 +15,8 @@ export async function build(opts = {}) {
 
     var app = express();
 
-    app.use(logger('dev'));
+    // Add middleware to write http access logs
+    app.use(accessLogger());
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cors())
@@ -22,42 +27,64 @@ export async function build(opts = {}) {
 
     // allocate status
     app.post("/credentials/status/allocate",
-        async (req, res) => {
+        async (req, res, next) => {
             try {
                 const vc = req.body;
-                if (!req.body || !Object.keys(req.body).length) return res.status(400).send({code: 400, message: 'A verifiable credential was not provided in the body.'})
-
+                if (!vc || !Object.keys(vc).length) {
+                    next({
+                        message: 'A verifiable credential must be provided in the body',
+                        code: 400
+                    })
+               }
                 const vcWithStatus = await allocateStatus(vc)
                 return res.json(vcWithStatus)
-            } catch (error) {
-                console.log(error);
-                return res.status(403).json({code: 403, error, message: "Error when allocating status position."});
+            } catch (e) {
+                 // We catch the async errors and pass them to the error handler.
+                if (!e.message) {e.message = "Error when allocating status position."}
+                // Note that if e contains a code property, the following spread of e will
+                // (correctly) overwrite the 500
+                next({code: 500, ...e})
             }
         })
 
     // the body will look like:  {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
     app.post("/credentials/status",
-        async (req, res) => {
+        async (req, res, next) => {
             try {
-                
-                if (!req.body || !Object.keys(req.body).length) return res.status(400).send({code: 400, message: 'No update request was provided in the body.'})
-
-                const { credentialId, credentialStatus } = req.body;
+                const updateRequest = req.body
+                if (!updateRequest || !updateRequest.credentialId || !updateRequest.credentialStatus) {
+                    next({
+                        message: 'A status update request must be provided in the body',
+                        code: 400
+                    })
+               }
+                const { credentialId, credentialStatus } = updateRequest
                 const status = credentialStatus[0].status
                 const statusType = credentialStatus[0].type
 
-                const statusResponse = (statusType === 'StatusList2021Credential') ?
-                    await revoke(credentialId, status)
-                    :
-                    { code: 400, message: 'StatusList2021Credential is the only supported revocation mechanism.' }
-               
+                if (statusType !== 'StatusList2021Credential') {
+                    next({
+                        message: 'StatusList2021Credential is the only supported status type.',
+                        code: 400
+                    })
+                }
+                const statusResponse = await revoke(credentialId, status)
                 return res.status(statusResponse.code).send(statusResponse)
-            } catch (error) {
-                console.log(error);
-                return res.status(500).json({code: 50, error, message: "Error updating credential status."});
+
+            } catch (e) {
+                 // We catch the async errors and pass them to the error handler.
+                if (!e.message) {e.message = "Error updating credential status position."}
+                // Note that if e contains a code property, the following spread of e will
+                // (correctly) overwrite the 500
+                next({code: 500, ...e})
             }
         })
 
+
+      // Attach the error handling middleware calls, in the order that they should run
+      app.use(errorLogger)
+      app.use(errorHandler)
+      app.use(invalidPathHandler)
 
 
     return app;

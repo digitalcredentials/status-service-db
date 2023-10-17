@@ -1,4 +1,5 @@
 import status from './status.js';
+import StatusException from './StatusException.js';
 
 const revoke = async (credentialId, credentialStatus) => {
     try {
@@ -7,14 +8,13 @@ const revoke = async (credentialId, credentialStatus) => {
             credentialId,
             credentialStatus
         });
-        return { code: 200, message: "Credential status successfully updated." }
+        return { code: 200, message: "Credential status successfully updated.", statusCredential }
     } catch (e) {
         if (e.message.includes("Unable to find credential with given ID")) {
-            return {code: 404, message: "Credential ID not found."}
+            throw new StatusException(404, "Credential ID not found.", e) 
         }
-        return { code: 400, message: "Bad Request" }
+        throw new StatusException(400, "Bad Request", e) 
     }
-
 }
 
 export default revoke

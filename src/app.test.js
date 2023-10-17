@@ -54,7 +54,7 @@ describe('api', () => {
       expect(response.status).to.eql(400);
     })
 
-    it('returns updated credential from status manager', async () => {
+    it('returns updated credential', async () => {
 
       const unsignedVCWithStatus = getUnsignedVCWithStatus()
       const allocateStatus = sinon.fake.returns(unsignedVCWithStatus)
@@ -72,7 +72,7 @@ describe('api', () => {
 
     })
 
-    it('returns unchanged credential from status manager', async () => {
+    it('returns unchanged credential when status already set ', async () => {
       const allocateStatus = sinon.fake.returns(getUnsignedVCWithStatus())
       const statusManagerStub = { allocateStatus }
       await status.initializeStatusManager(statusManagerStub)
@@ -128,10 +128,9 @@ describe('api', () => {
 
       expect(response.header["content-type"]).to.have.string("json");
       expect(response.status).to.eql(404);
-      expect(response.body.message).to.eql("Credential ID not found.")
+      console.log(response.body.message)
+      expect(response.body.message).to.contain("An error occurred in the status-service: Credential ID not found.")
     })
-
-
 
   })
 })
