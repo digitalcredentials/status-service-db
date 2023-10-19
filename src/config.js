@@ -1,6 +1,8 @@
 
 let CONFIG;
 const defaultPort = 4008
+const defaultConsoleLogLevel = 'silly'
+const defaultLogLevel = 'silly'
 
 export function setConfig() {
   CONFIG = parseConfig();
@@ -17,9 +19,8 @@ function parseConfig() {
     credStatusRepoName: env.CRED_STATUS_REPO_NAME, 
     credStatusMetaRepoName: env.CRED_STATUS_META_REPO_NAME, 
     credStatusOwnerAccountName: env.CRED_STATUS_REPO_OWNER,
-    enableAccessLogging: env.ENABLE_ACCESS_LOGGING?.toLowerCase() === 'true',
-    logToConsole: env.LOG_TO_CONSOLE?.toLowerCase() === 'true',
-    httpAccessLogFile: env.HTTP_ACCESS_LOG_FILE,
+    consoleLogLevel: env.CONSOLE_LOG_LEVEL?.toLocaleLowerCase() || defaultConsoleLogLevel,
+    logLevel: env.LOG_LEVEL?.toLocaleLowerCase() || defaultLogLevel,
     errorLogFile: env.ERROR_LOG_FILE,
     logAllFile: env.LOG_ALL_FILE
   });
