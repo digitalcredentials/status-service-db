@@ -2,6 +2,7 @@
 
 [![Build status](https://img.shields.io/github/actions/workflow/status/digitalcredentials/status-service/main.yml?branch=main)](https://github.com/digitalcredentials/status-service/actions?query=workflow%3A%22Node.js+CI%22)
 
+IMPORTANT NOTE ABOUT VERSIONING: If you are using a Docker Hub image of this repository, make sure you are reading the version of this README that corresponds to your Docker Hub version.  If, for example, you are using the image `digitalcredentials/status-service:0.1.0` then you'll want to use the corresponding tagged repo: [https://github.com/digitalcredentials/status-service/tree/v0.1.0](https://github.com/digitalcredentials/status-service/tree/v0.1.0).
 
 ## Table of Contents
 
@@ -13,6 +14,7 @@
   - [Allocate a status position](#allocate-status-position)
   - [Revoke](#revoke)
 - [Versioning](#versioning)
+- [Logging](#logging)
 - [Development](#development)
   - [Testing](#testing)
 - [Contribute](#contribute)
@@ -20,7 +22,7 @@
 
 ## Summary
 
-Allocates a [revocation status position](https://www.w3.org/TR/vc-status-list/) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model/), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
+A microservice (running as a nodejs express app) that allocates a [revocation status position](https://www.w3.org/TR/vc-status-list/) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model/), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
 
 Implements two http endpoints:
 
@@ -41,6 +43,10 @@ There is a sample .env file provided called .env.example to help you get started
 | `CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | no | yes if ENABLE_STATUS_ALLOCATION is true |
 | `CRED_STATUS_ACCESS_TOKEN` | Github access token for the credential status repositories | no | yes if ENABLE_STATUS_ALLOCATION is true |
 | `CRED_STATUS_DID_SEED` | seed used to deterministically generate DID | no | yes if ENABLE_STATUS_ALLOCATION is true |
+| `ERROR_LOG_FILE` | log file for all errors - see [Logging](#logging) | no | no |
+| `LOG_ALL_FILE` | log file for everything - see [Logging](#logging) | no | no |
+| `CONSOLE_LOG_LEVEL` | console log level - see [Logging](#logging) | silly | no |
+| `LOG_LEVEL` | log level for application - see [Logging](#logging) | silly | no |
 
 ## Github Repositories
 
@@ -215,6 +221,54 @@ We DO NOT provide a `latest` tag so you must provide a tag name (i.e, the versio
 To ensure you've got compatible versions of the services and the coordinator, the `major` number for each should match. At the time of writing, the versions for each are at 0.1.0, and the `major` number (the leftmost number) agrees across all three.
 
 If you do ever want to work from the source code in the repository and build your own images, we've tagged the commits in Github that were used to build the corresponding Docker image. So a github tag of v0.1.0 coresponds to a docker image tag of 0.1.0
+
+## Logging
+
+We support the following log levels:
+
+```
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  verbose: 4,
+  debug: 5,
+  silly: 6
+```
+
+Logging is configured with environment variables, as defined in the [Environment Variables](#environment-variables) section.
+
+By default, everything is logged to the console (log level `silly`).
+
+You may set the log level for the application as whole, e.g.,
+
+```LOG_LEVEL=http```
+
+Which would only log messages with severity 'http' and all below it (info, warn, error). 
+
+The default is to log everything (level 'silly').
+
+You can also set the log level for console logging, e.g.,
+
+```CONSOLE_LOG_LEVEL=debug```
+
+This would log everything for severity 'debug' and lower (i.e., verbose, http, info, warn, error). This of course assumes that you've set the log level for the application as a whole to at least the same level.
+
+The default log level for the console is 'silly', which logs everything.
+
+There are also two log files that can be enabled:
+
+* errors (only logs errors)
+* all (logs everything - all log levels)
+
+Enable each log by setting an env variable for each, indicating the path to the appropriate file, like this example:
+
+```
+LOG_ALL_FILE=logs/all.log
+ERROR_LOG_FILE=logs/error.log
+```
+
+If you don't set the path, the log is disabled.
 
 ## Development
 
