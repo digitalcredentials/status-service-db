@@ -64,7 +64,7 @@ There is a sample `.env` file provided called `.env.db.example` to help you get 
 1. Run `lt --port $PORT`
 2. Copy the URL that is logged to the terminal
 3. Set `STATUS_CRED_SITE_ORIGIN` to the value from the previous step (be sure to also configure all other required environment variables)
-4. Run `npm run start` (assuming you already ran `npm install`)
+4. Run `npm start` (assuming you already ran `npm install`)
 
 #### Git
 There is a sample `.env` file provided called `.env.git.example` to help you get started with your own `.env` file. In addition to the general fields, every Git credential status manager recognizes the following fields in an `.env` file:
