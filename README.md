@@ -53,23 +53,29 @@ There is a sample `.env` file provided called `.env.db.example` to help you get 
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
-| `STATUS_CRED_SITE_ORIGIN` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \* `STATUS_CRED_SITE_ORIGIN` | Base URL of status credentials managed by this service | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
 | `CRED_STATUS_DB_URL` | URL of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if the other set of `CRED_STATUS_DB_*` fields are not set |
 | `CRED_STATUS_DB_HOST` | host of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 | `CRED_STATUS_DB_PORT` | port of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 | `CRED_STATUS_DB_USER` | username of user with read/write privileges on the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 | `CRED_STATUS_DB_PASS` | password associated with `CRED_STATUS_DB_USER` | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 
+\* In order for credential status verification to work, you will need to use a publicly accessible URL for `STATUS_CRED_SITE_ORIGIN`, so that the verifier can access the status data. If you would like to spin up this service at a public URL, consider using a traffic forwarding tool like [localtunnel](https://www.npmjs.com/package/localtunnel). Once you have installed it, follow these simple steps to run the service:
+1. Run `lt --port $PORT`
+2. Copy the URL that is logged to the terminal
+3. Set `STATUS_CRED_SITE_ORIGIN` to the value from the previous step (be sure to also configure all other required environment variables)
+4. Run `npm run start` (assuming you already ran `npm install`)
+
 #### Git
 There is a sample `.env` file provided called `.env.git.example` to help you get started with your own `.env` file. In addition to the general fields, every Git credential status manager recognizes the following fields in an `.env` file:
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
-| \*`CRED_STATUS_OWNER` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
-| \*`CRED_STATUS_REPO_NAME` | name of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
-| \*`CRED_STATUS_REPO_ID` | ID of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
-| \*`CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
-| \*`CRED_STATUS_META_REPO_ID` | ID of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
+| \* `CRED_STATUS_OWNER` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \* `CRED_STATUS_REPO_NAME` | name of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \* `CRED_STATUS_REPO_ID` | ID of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
+| \* `CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \* `CRED_STATUS_META_REPO_ID` | ID of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
 | `CRED_STATUS_ACCESS_TOKEN` | Github access token for the credential status repositories | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
 
 \* You'll have to create Git repositories for `CRED_STATUS_REPO_NAME` and `CRED_STATUS_META_REPO_NAME` under the ownership of `CRED_STATUS_OWNER`, as they will be used to manage credential status. Full details of the implementation are [here](https://github.com/digitalcredentials/status-list-manager-git).
