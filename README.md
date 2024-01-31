@@ -33,26 +33,46 @@ The `/credentials/status` endpoint corresponds to the [VC-API /credentials/statu
 
 ## Environment Variables
 
-There is a sample .env file provided called .env.example to help you get started with your own .env file. The supported fields:
+We provide support for managing credential status in a variety of storage services. Currently, we support a [database integration](https://github.com/digitalcredentials/status-list-manager-db) for MongoDB and [Git integrations](https://github.com/digitalcredentials/status-list-manager-git) for GitHub and GitLab. For each service category, we have provided a sample `.env.*.example` file that you can use to initialize a `.env` file for your implementation.
+
+#### General
+Every credential status manager recognizes the following fields in an `.env` file:
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
+| `CRED_STATUS_SERVICE` | name representing storage service used to manage credential status: `mongodb`, `github`, `gitlab` | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| `CRED_STATUS_DID_SEED` | seed used to deterministically generate DID | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
 | `PORT` | http port on which to run the express app | 4008 | no |
-| `CRED_STATUS_OWNER` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | no | yes if ENABLE_STATUS_ALLOCATION is true |
-| `CRED_STATUS_REPO_NAME` | name of the credential status repository | no | yes if ENABLE_STATUS_ALLOCATION is true |
-| `CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | no | yes if ENABLE_STATUS_ALLOCATION is true |
-| `CRED_STATUS_ACCESS_TOKEN` | Github access token for the credential status repositories | no | yes if ENABLE_STATUS_ALLOCATION is true |
-| `CRED_STATUS_DID_SEED` | seed used to deterministically generate DID | no | yes if ENABLE_STATUS_ALLOCATION is true |
-| `ERROR_LOG_FILE` | log file for all errors - see [Logging](#logging) | no | no |
-| `LOG_ALL_FILE` | log file for everything - see [Logging](#logging) | no | no |
+| `ERROR_LOG_FILE` | log file for all errors - see [Logging](#logging) | N/A | no |
+| `LOG_ALL_FILE` | log file for everything - see [Logging](#logging) | N/A | no |
 | `CONSOLE_LOG_LEVEL` | console log level - see [Logging](#logging) | silly | no |
 | `LOG_LEVEL` | log level for application - see [Logging](#logging) | silly | no |
 
-## Github Repositories
+#### MongoDB
+There is a sample `.env` file provided called `.env.db.example` to help you get started with your own `.env` file. In addition to the general fields, every Git credential status manager recognizes the following fields in an `.env` file:
 
-You'll have to create two new github repositories that will be used exclusively to manage the status.  Full details of the implementation are [here](https://github.com/digitalcredentials/status-list-manager-git)
+| Key | Description | Default | Required |
+| --- | --- | --- | --- |
+| `STATUS_CRED_SITE_ORIGIN` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| `CRED_STATUS_DB_URL` | URL of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if the other set of `CRED_STATUS_DB_*` fields are not set |
+| `CRED_STATUS_DB_HOST` | host of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_PORT` | port of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_USER` | username of user with read/write privileges on the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_PASS` | password associated with `CRED_STATUS_DB_USER` | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 
-For this MVP implementation of the issuer we've only exposed the github options, but if you would like to use gitlab instead, just let us know and we can expose those options.
+#### Git
+There is a sample `.env` file provided called `.env.git.example` to help you get started with your own `.env` file. In addition to the general fields, every Git credential status manager recognizes the following fields in an `.env` file:
+
+| Key | Description | Default | Required |
+| --- | --- | --- | --- |
+| \*`CRED_STATUS_OWNER` | name of the owner account (personal or organization) in the source control service that will host the credential status resources | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \*`CRED_STATUS_REPO_NAME` | name of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \*`CRED_STATUS_REPO_ID` | ID of the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
+| \*`CRED_STATUS_META_REPO_NAME` | name of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| \*`CRED_STATUS_META_REPO_ID` | ID of the credential status metadata repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_SERVICE` = `gitlab` |
+| `CRED_STATUS_ACCESS_TOKEN` | Github access token for the credential status repositories | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+
+\* You'll have to create Git repositories for `CRED_STATUS_REPO_NAME` and `CRED_STATUS_META_REPO_NAME` under the ownership of `CRED_STATUS_OWNER`, as they will be used to manage credential status. Full details of the implementation are [here](https://github.com/digitalcredentials/status-list-manager-git).
 
 ## Signing key
 
