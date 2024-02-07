@@ -49,7 +49,7 @@ Every credential status manager recognizes the following fields in an `.env` fil
 | `LOG_LEVEL` | log level for application - see [Logging](#logging) | silly | no |
 
 #### MongoDB
-There is a sample `.env` file provided called `.env.db.example` to help you get started with your own `.env` file. In addition to the general fields, every Git credential status manager recognizes the following fields in an `.env` file:
+There is a sample `.env` file provided called `.env.db.example` to help you get started with your own `.env` file. In addition to the general fields, every MongoDB credential status manager recognizes the following fields in an `.env` file:
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
