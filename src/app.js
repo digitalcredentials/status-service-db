@@ -33,16 +33,20 @@ export async function build(opts = {}) {
       return null;
     }
     const statusCredentialId = req.params.statusCredentialId;
-    let errorMessage;
     try {
       const statusCredential = await status.getStatusCredential(statusCredentialId);
       if (!statusCredential) {
-        errorMessage = `Unable to find Status Credential with ID "${statusCredentialId}".`;
-        return res.status(404).send(errorMessage);
+        next({
+          message: `Unable to find Status Credential with ID "${statusCredentialId}".`,
+          code: 404
+        });
       }
       return res.status(200).json(statusCredential);
     } catch (error) {
-      return res.status(error.code).send(error.message);
+      next({
+        message: error.message,
+        code: error.code
+      });
     }
   });
 
