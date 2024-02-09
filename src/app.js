@@ -28,7 +28,7 @@ export async function build(opts = {}) {
   });
 
   // get status credential
-  app.get('/:statusCredentialId', async (req, res) => {
+  app.get('/:statusCredentialId', async (req, res, next) => {
     if (credStatusService !== 'mongodb') {
       return null;
     }
