@@ -20,10 +20,10 @@ export async function build(opts = {}) {
   app.use(cors());
 
   app.get('/', function (req, res, next) {
-    res.send({ message: 'status-service server status: ok.' });
+    res.send({ message: 'status-service-db server status: ok.' });
   });
 
-  // get status credential
+  // Get status credential
   app.get('/:statusCredentialId', async (req, res, next) => {
     const statusCredentialId = req.params.statusCredentialId;
     try {
@@ -43,7 +43,7 @@ export async function build(opts = {}) {
     }
   });
 
-  // allocate status
+  // Allocate status
   app.post('/credentials/status/allocate',
     async (req, res, next) => {
       try {
@@ -65,7 +65,9 @@ export async function build(opts = {}) {
       }
     });
 
-  // the body will look like:  {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
+  // Update status
+  // The body will look like:
+  // {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
   app.post('/credentials/status',
     async (req, res, next) => {
       try {

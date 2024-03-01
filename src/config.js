@@ -1,8 +1,8 @@
 
 let CONFIG;
-const defaultPort = 4008
-const defaultConsoleLogLevel = 'silly'
-const defaultLogLevel = 'silly'
+const defaultPort = 4008;
+const defaultConsoleLogLevel = 'silly';
+const defaultLogLevel = 'silly';
 
 export function setConfig() {
   CONFIG = parseConfig();
@@ -39,38 +39,12 @@ function getMongoDbEnvs() {
   };
 }
 
-function getGitHubEnvs() {
-  const env = process.env;
-  return {
-    credStatusAccessToken: env.CRED_STATUS_ACCESS_TOKEN,
-    credStatusRepoName: env.CRED_STATUS_REPO_NAME,
-    credStatusMetaRepoName: env.CRED_STATUS_META_REPO_NAME,
-    credStatusOwnerAccountName: env.CRED_STATUS_REPO_OWNER
-  };
-}
-
-function getGitLabEnvs() {
-  const env = process.env;
-  const gitHubEnvs = getGitHubEnvs();
-  return {
-    ...gitHubEnvs,
-    credStatusRepoId: env.CRED_STATUS_REPO_ID,
-    credStatusMetaRepoId: env.CRED_STATUS_META_REPO_ID
-  };
-}
-
 function parseConfig() {
   const env = process.env
   let serviceSpecificEnvs;
   switch (env.CRED_STATUS_SERVICE) {
     case 'mongodb':
       serviceSpecificEnvs = getMongoDbEnvs();
-      break;
-    case 'github':
-      serviceSpecificEnvs = getGitHubEnvs();
-      break;
-    case 'gitlab':
-      serviceSpecificEnvs = getGitLabEnvs();
       break;
     default:
       throw new Error('Encountered unsupported credential status service');
@@ -80,12 +54,12 @@ function parseConfig() {
     ...generalEnvs,
     ...serviceSpecificEnvs
   });
-  return config
+  return config;
 }
 
 export function getConfig() {
   if (!CONFIG) {
-     setConfig()
+    setConfig();
   }
   return CONFIG;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@digitalcredentials/status-service",
+  "name": "@digitalcredentials/status-service-db",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@digitalcredentials/credential-status-manager-db": "github:digitalcredentials/credential-status-manager-db#initial-implementation",
-    "@digitalcredentials/credential-status-manager-git": "^1.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
