@@ -53,12 +53,17 @@ There is a sample `.env` file provided called `.env.db.example` to help you get 
 
 | Key | Description | Default | Required |
 | --- | --- | --- | --- |
-| \* `STATUS_CRED_SITE_ORIGIN` | Base URL of status credentials managed by this service | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
-| `CRED_STATUS_DB_URL` | URL of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if the other set of `CRED_STATUS_DB_*` fields are not set |
-| `CRED_STATUS_DB_HOST` | host of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
-| `CRED_STATUS_DB_PORT` | port of the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
-| `CRED_STATUS_DB_USER` | username of user with read/write privileges on the database instance used to manage the credential status repository | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| \* `STATUS_CRED_SITE_ORIGIN` | base URL of status credentials managed by a given deployment | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true |
+| `CRED_STATUS_DB_URL` | URL of the database instance used to manage credential status data | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if the other set of `CRED_STATUS_DB_*` fields are not set |
+| `CRED_STATUS_DB_HOST` | host of the database instance used to manage credential status data | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_PORT` | port of the database instance used to manage credential status data | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_USER` | username of user with read/write privileges on the database instance used to manage credential status data | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
 | `CRED_STATUS_DB_PASS` | password associated with `CRED_STATUS_DB_USER` | N/A | yes if `ENABLE_STATUS_ALLOCATION` is true and if `CRED_STATUS_DB_URL` is not set |
+| `CRED_STATUS_DB_NAME` | name of the database instance used to manage credential status data | `credentialStatus` | no |
+| `STATUS_CRED_TABLE_NAME` | name of the database table used to manage status credentials | `StatusCredential` | no |
+| `CONFIG_TABLE_NAME` | name of the database table used to manage application configuration | `Config` | no |
+| `EVENT_TABLE_NAME` | name of the database table used to manage credential status events | `Event` | no |
+| `CRED_EVENT_TABLE_NAME` | name of the database table used to manage the latest status event for a given credential | `CredentialEvent` | no |
 
 \* In order for credential status verification to work, you will need to use a publicly accessible URL for `STATUS_CRED_SITE_ORIGIN`, so that the verifier can access the status data. If you would like to spin up this service at a public URL, consider using a traffic forwarding tool like [localtunnel](https://www.npmjs.com/package/localtunnel). Once you have installed it, follow these simple steps to run the service:
 1. Run `lt --port $PORT`
@@ -225,7 +230,7 @@ NOTE: CURL can get a bit clunky if you want to experiment more (like say by chan
 
 ### Revoke
 
-Revocation is fully explained in the StatusList2021 specifivation and the git status repo implemenation but amounts to POSTing an object to the revocation endpoint, like so:
+Revocation is fully explained in the Status List 2021 specification and the git status repo implemenation but amounts to POSTing an object to the revocation endpoint, like so:
 
 ```
 {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}

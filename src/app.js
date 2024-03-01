@@ -1,7 +1,5 @@
 import express from 'express';
-import logger from 'morgan';
 import cors from 'cors';
-import { getConfig } from './config.js';
 import status from './status.js';
 import revoke from './revoke.js'
 import allocateStatus from './allocateStatus.js'
@@ -11,8 +9,6 @@ import errorLogger from './middleware/errorLogger.js';
 import invalidPathHandler from './middleware/invalidPathHandler.js';
 
 export async function build(opts = {}) {
-  const { credStatusService } = getConfig();
-
   await status.initializeStatusManager();
 
   const app = express();
@@ -29,9 +25,6 @@ export async function build(opts = {}) {
 
   // get status credential
   app.get('/:statusCredentialId', async (req, res, next) => {
-    if (credStatusService !== 'mongodb') {
-      return null;
-    }
     const statusCredentialId = req.params.statusCredentialId;
     try {
       const statusCredential = await status.getStatusCredential(statusCredentialId);
@@ -104,10 +97,10 @@ export async function build(opts = {}) {
       }
     });
 
-    // Attach the error handling middleware calls, in the order that they should run
-    app.use(errorLogger);
-    app.use(errorHandler);
-    app.use(invalidPathHandler);
+  // Attach the error handling middleware calls, in the order that they should run
+  app.use(errorLogger);
+  app.use(errorHandler);
+  app.use(invalidPathHandler);
 
   return app;
 }

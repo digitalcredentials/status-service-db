@@ -8,12 +8,17 @@ import { getConfig } from './config.js';
 
 const {
   // Database env vars
-  statusCredentialSiteOrigin,
+  statusCredSiteOrigin,
   credStatusDatabaseUrl,
   credStatusDatabaseHost,
   credStatusDatabasePort,
   credStatusDatabaseUsername,
   credStatusDatabasePassword,
+  credStatusDatabaseName,
+  statusCredTableName,
+  configTableName,
+  eventTableName,
+  credEventTableName,
 
   // Git env vars
   credStatusService,
@@ -30,23 +35,35 @@ let STATUS_LIST_MANAGER;
 
 async function createDatabaseStatusManager() {
   return createStatusManagerDb({
-    statusCredentialSiteOrigin,
+    statusCredentialSiteOrigin: statusCredSiteOrigin,
     databaseService: credStatusService,
     databaseUrl: credStatusDatabaseUrl,
     databaseHost: credStatusDatabaseHost,
     databasePort: credStatusDatabasePort,
     databaseUsername: credStatusDatabaseUsername,
     databasePassword: credStatusDatabasePassword,
+    databaseName: credStatusDatabaseName,
+    statusCredentialTableName: statusCredTableName,
+    configTableName,
+    eventTableName,
+    credentialEventTableName: credEventTableName,
     didMethod: 'key',
     didSeed: credStatusDidSeed,
-    signUserCredential: false,
-    signStatusCredential: true
+    // This is the already the default value,
+    // but setting here to be explicit
+    autoDeployDatabase: true,
+    // This is the already the default value,
+    // but setting here to be explicit
+    signStatusCredential: true,
+    // This is the already the default value,
+    // but setting here to be explicit
+    signUserCredential: false
   });
 }
 
 async function createGitHubStatusManager() {
   return createStatusManagerGit({
-    service: credStatusService,
+    gitService: credStatusService,
     repoName: credStatusRepoName,
     metaRepoName: credStatusMetaRepoName,
     ownerAccountName: credStatusOwnerAccountName,
@@ -54,14 +71,18 @@ async function createGitHubStatusManager() {
     metaRepoAccessToken: credStatusAccessToken,
     didMethod: 'key',
     didSeed: credStatusDidSeed,
-    signUserCredential: false,
-    signStatusCredential: true
+    // This is the already the default value,
+    // but setting here to be explicit
+    signStatusCredential: true,
+    // This is the already the default value,
+    // but setting here to be explicit
+    signUserCredential: false
   });
 }
 
 async function createGitLabStatusManager() {
   return createStatusManagerGit({
-    service: credStatusService,
+    gitService: credStatusService,
     repoName: credStatusRepoName,
     repoId: credStatusRepoId,
     metaRepoName: credStatusMetaRepoName,
@@ -71,8 +92,12 @@ async function createGitLabStatusManager() {
     metaRepoAccessToken: credStatusAccessToken,
     didMethod: 'key',
     didSeed: credStatusDidSeed,
-    signUserCredential: false,
-    signStatusCredential: true
+    // This is the already the default value,
+    // but setting here to be explicit
+    signStatusCredential: true,
+    // This is the already the default value,
+    // but setting here to be explicit
+    signUserCredential: false
   });
 }
 
@@ -106,9 +131,6 @@ async function getStatusManager() {
 }
 
 async function getStatusCredential(statusCredentialId) {
-  if (credStatusService !== 'mongodb') {
-    return null;
-  }
   const statusManager = await getStatusManager();
   return statusManager.getStatusCredential(statusCredentialId);
 }
