@@ -10,6 +10,6 @@ const errorLogger = (error, request, response, next) => {
   logger.error(logEntrySummary, logEntry);
 
   next(error); // done logging, so call the next middleware that deals with errors
-}
+};
 
 export default errorLogger;

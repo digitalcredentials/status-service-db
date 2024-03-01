@@ -23,6 +23,6 @@ const accessLogger = () => {
     messageFormatString,
     options
   );
-}
+};
 
 export default accessLogger;

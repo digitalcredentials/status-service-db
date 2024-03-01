@@ -10,6 +10,6 @@ const errorHandler = (error, request, response, next) => {
   const errorResponse = {code, message};
   response.header('Content-Type', 'application/json');
   return response.status(error.code).json(errorResponse);
-}
+};
 
 export default errorHandler;

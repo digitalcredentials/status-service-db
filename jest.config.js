@@ -1,6 +1,5 @@
 export default {
-    setupFiles: ['./.jest/setEnvVars.js'],
-   // automock: true
-    transform: {}
-  
-  };
+  setupFiles: ['./.jest/setEnvVars.js'],
+  // automock: true
+  transform: {}
+};
