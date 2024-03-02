@@ -24,7 +24,7 @@ export async function build(opts = {}) {
   });
 
   // Get status credential
-  app.get('/:statusCredentialId', async (req, res, next) => {
+  app.get('/:statusCredentialId', async function (req, res, next) {
     const statusCredentialId = req.params.statusCredentialId;
     try {
       const statusCredential = await status.getStatusCredential(statusCredentialId);
@@ -45,7 +45,7 @@ export async function build(opts = {}) {
 
   // Allocate status
   app.post('/credentials/status/allocate',
-    async (req, res, next) => {
+    async function (req, res, next) {
       try {
         const vc = req.body;
         if (!vc || !Object.keys(vc).length) {
@@ -69,7 +69,7 @@ export async function build(opts = {}) {
   // The body will look like:
   // {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
   app.post('/credentials/status',
-    async (req, res, next) => {
+    async function (req, res, next) {
       try {
         const updateRequest = req.body;
         if (!updateRequest || !updateRequest.credentialId || !updateRequest.credentialStatus) {

@@ -11,7 +11,7 @@ const accessLogger = () => {
   // Change the boolean check in skip if
   // you want to do things like only log
   // when NODE_ENV=development
-  const skip = () => ! enableAccessLogging;
+  const skip = () => !enableAccessLogging;
   // morgan options. We override 'stream' to instead use winston,
   // and override 'skip' to disable logging if disabled in env
   const options = { stream, skip };
