@@ -56,6 +56,7 @@ function getMongoDbEnvs() {
     credStatusDatabasePassword: env.CRED_STATUS_DB_PASS,
     credStatusDatabaseName: env.CRED_STATUS_DB_NAME,
     statusCredTableName: env.STATUS_CRED_TABLE_NAME,
+    userCredTableName: env.USER_CRED_TABLE_NAME,
     configTableName: env.CONFIG_TABLE_NAME,
     eventTableName: env.EVENT_TABLE_NAME,
     credEventTableName: env.CRED_EVENT_TABLE_NAME

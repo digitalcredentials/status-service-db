@@ -11,6 +11,7 @@ const {
   credStatusDatabasePassword,
   credStatusDatabaseName,
   statusCredTableName,
+  userCredTableName,
   configTableName,
   eventTableName,
   credEventTableName,
@@ -30,6 +31,7 @@ async function createMongoDbStatusManager() {
     databasePassword: credStatusDatabasePassword,
     databaseName: credStatusDatabaseName,
     statusCredentialTableName: statusCredTableName,
+    userCredentialTableName: userCredTableName,
     configTableName,
     eventTableName,
     credentialEventTableName: credEventTableName,
@@ -75,4 +77,43 @@ async function getStatusCredential(statusCredentialId) {
   return statusManager.getStatusCredential(statusCredentialId);
 }
 
-export default { initializeStatusManager, getStatusManager, getStatusCredential };
+async function allocateAllStatuses(verifiableCredential) {
+  const statusManager = await getStatusManager();
+  const result = verifiableCredential.credentialStatus ?
+    verifiableCredential :
+    await statusManager.allocateAllStatuses(verifiableCredential);
+  return result;
+}
+
+async function updateStatus(credentialId, credentialStatus) {
+  const statusManager = await getStatusManager();
+  try {
+    switch (credentialStatus) {
+      case 'revoked':
+        await statusManager.revokeCredential(credentialId);
+        return { code: 200, message: 'Credential status successfully revoked.' };
+      case 'suspended':
+        await statusManager.suspendCredential(credentialId);
+        return { code: 200, message: 'Credential status successfully suspended.' };
+      case 'unsuspended':
+        await statusManager.unsuspendCredential(credentialId);
+        return { code: 200, message: 'Credential status successfully unsuspended.' };
+      default:
+        return { code: 400, message: `Unsupported credential status: "${credentialStatus}"` };
+    }
+  } catch (error) {
+    return {
+      code: error.code || 500,
+      message: error.message ||
+        `Unable to apply status "${credentialStatus}" to credential with ID "${credentialId}".`
+    };
+  }
+}
+
+export default {
+  initializeStatusManager,
+  getStatusManager,
+  getStatusCredential,
+  allocateAllStatuses,
+  updateStatus
+};

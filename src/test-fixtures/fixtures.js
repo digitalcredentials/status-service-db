@@ -3,13 +3,13 @@ import testVC from './testVC.js';
   // "credentialStatus":
   const credentialStatus =  {
     "id": "https://digitalcredentials.github.io/credential-status-jc-test/XA5AAK1PV4#16",
-    "type": "StatusList2021Entry",
+    "type": "BitstringStatusListEntry",
     "statusPurpose": "revocation",
     "statusListIndex": 16,
     "statusListCredential": "https://digitalcredentials.github.io/credential-status-jc-test/XA5AAK1PV4"
 }
 
-const statusUpdateBody = { "credentialId": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1", "credentialStatus": [{ "type": "StatusList2021Credential", "status": "revoked" }] }
+const statusUpdateBody = { "credentialId": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1", "credentialStatus": [{ "type": "BitstringStatusListCredential", "status": "revoked" }] }
 
 const getUnsignedVC = () => JSON.parse(JSON.stringify(testVC))
 

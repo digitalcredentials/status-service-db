@@ -1,8 +1,7 @@
 export default { 
     "@context": [
-      "https://www.w3.org/2018/credentials/v1",
-      "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-          "https://w3id.org/vc/status-list/2021/v1"
+      "https://www.w3.org/ns/credentials/v2",
+      "https://purl.imsglobal.org/spec/ob/v3p0/context.json"
     ],
     "id": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1", 
     "type": [
@@ -20,7 +19,7 @@ export default {
           "type": "Image"
         }	
     },
-    "issuanceDate": "2020-01-01T00:00:00Z", 
+    "validFrom": "2020-01-01T00:00:00Z", 
     "name": "A Simply Wonderful Course",
     "credentialSubject": {
         "type": "AchievementSubject",

@@ -24,7 +24,7 @@ IMPORTANT NOTE ABOUT VERSIONING: If you are using a Docker Hub image of this rep
 
 ## Summary
 
-A microservice (running as a nodejs express app) that uses a database service to allocate a [status position](https://www.w3.org/TR/vc-status-list) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
+A microservice (running as a nodejs express app) that uses a database service to allocate a [status position](https://www.w3.org/TR/vc-bitstring-status-list) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
 
 Implements two HTTP endpoints:
 
@@ -35,7 +35,7 @@ The `/credentials/status` endpoint corresponds to the [VC-API /credentials/statu
 
 ## Environment Variables
 
-This service provides support for managing credential status in a variety of database services. Currently, it supports integration with MongoDB via [this implementation](https://github.com/digitalcredentials/status-list-manager-db) of [Bitstring Status List](https://www.w3.org/TR/vc-bitstring-status-list). We have provided a sample `.env.example` file that you can use as a guide for creating a `.env` file for your implementation. Here are the variables recognized by all database credential status managers:
+This service provides support for managing credential status in a variety of database services. Currently, it supports integration with MongoDB via [this implementation](https://github.com/digitalcredentials/credential-status-manager-db) of [Bitstring Status List](https://www.w3.org/TR/vc-bitstring-status-list). We have provided a sample `.env.example` file that you can use as a guide for creating a `.env` file for your implementation. Here are the variables recognized by all database credential status managers:
 
 | Key | Description | Type | Required |
 | --- | --- | --- | --- |
@@ -48,6 +48,7 @@ This service provides support for managing credential status in a variety of dat
 | `CRED_STATUS_DB_PASS` | password associated with `CRED_STATUS_DB_USER` | string | yes if `CRED_STATUS_DB_URL` is not set |
 | `CRED_STATUS_DB_NAME` | name of the database instance used to manage credential status data | string | no (default: `credentialStatus`) |
 | `STATUS_CRED_TABLE_NAME` | name of the database table used to manage status credentials | string | no (default: `StatusCredential`) |
+| `USER_CRED_TABLE_NAME` | name of the database table used to manage user credentials | string | no (default: `UserCredential`) |
 | `CONFIG_TABLE_NAME` | name of the database table used to manage application configuration | string | no (default: `Config`) |
 | `EVENT_TABLE_NAME` | name of the database table used to manage credential status events | string | no (default: `Event`) |
 | `CRED_EVENT_TABLE_NAME` | name of the database table used to manage the latest status event for a given credential | string | no (default: `CredentialEvent`) |
@@ -100,7 +101,7 @@ curl --location 'http://localhost:4008/credentials/status/allocate' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
+    "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json"
   ],
   "id": "urn:uuid:2fe53dc9-b2ec-4939-9b2c-0d00f6663b6c",
@@ -118,7 +119,7 @@ curl --location 'http://localhost:4008/credentials/status/allocate' \
     "url": "https://dcconsortium.org",
     "image": "https://user-images.githubusercontent.com/752326/230469660-8f80d264-eccf-4edd-8e50-ea634d407778.png"
   },
-  "issuanceDate": "2023-08-02T17:43:32.903Z",
+  "validFrom": "2023-08-02T17:43:32.903Z",
   "credentialSubject": {
     "type": [
       "AchievementSubject"
@@ -150,9 +151,8 @@ This should return the same credential but with an allocated status. It should l
 ```
 {
     "@context": [
-        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/ns/credentials/v2",
         "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json",
-        "https://w3id.org/vc/status-list/2021/v1",
         "https://w3id.org/security/suites/ed25519-2020/v1"
     ],
     "id": "urn:uuid:2fe53dc9-b2ec-4939-9b2c-0d00f6663b6c",
@@ -170,7 +170,7 @@ This should return the same credential but with an allocated status. It should l
         "url": "https://dcconsortium.org",
         "image": "https://user-images.githubusercontent.com/752326/230469660-8f80d264-eccf-4edd-8e50-ea634d407778.png"
     },
-    "issuanceDate": "2023-08-02T17:43:32.903Z",
+    "validFrom": "2023-08-02T17:43:32.903Z",
     "credentialSubject": {
         "type": [
             "AchievementSubject"
@@ -196,7 +196,7 @@ This should return the same credential but with an allocated status. It should l
     },
     "credentialStatus": {
         "id": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB#5",
-        "type": "StatusList2021Entry",
+        "type": "BitstringStatusListEntry",
         "statusPurpose": "revocation",
         "statusListIndex": 5,
         "statusListCredential": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB"
@@ -213,7 +213,7 @@ NOTE: CURL can get a bit clunky if you want to experiment more (e.g., by changin
 Revocation is fully explained in the Bitstring Status List specification and our implemenations thereof, but effectively, it amounts to POSTing an object to the revocation endpoint, like so:
 
 ```
-{credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
+{credentialId: '23kdr', credentialStatus: [{type: 'BitstringStatusListCredential', status: 'revoked'}]}
 ```
 
 Fundamentally, you are just posting up the ID of the credential.

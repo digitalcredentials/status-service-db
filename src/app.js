@@ -1,8 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import status from './status.js';
-import revoke from './revoke.js'
-import allocateStatus from './allocateStatus.js'
 import accessLogger from './middleware/accessLogger.js';
 import errorHandler from './middleware/errorHandler.js';
 import errorLogger from './middleware/errorLogger.js';
@@ -54,7 +52,7 @@ export async function build(opts = {}) {
             code: 400
           });
         }
-        const vcWithStatus = await allocateStatus(vc);
+        const vcWithStatus = await status.allocateAllStatuses(vc);
         return res.json(vcWithStatus);
       } catch (e) {
         // We catch the async errors and pass them to the error handler.
@@ -67,7 +65,7 @@ export async function build(opts = {}) {
 
   // Update status
   // The body will look like:
-  // {credentialId: '23kdr', credentialStatus: [{type: 'StatusList2021Credential', status: 'revoked'}]}
+  // {credentialId: '23kdr', credentialStatus: [{type: 'BitstringStatusListCredential', status: 'revoked'}]}
   app.post('/credentials/status',
     async function (req, res, next) {
       try {
@@ -79,16 +77,16 @@ export async function build(opts = {}) {
           });
         }
         const { credentialId, credentialStatus } = updateRequest;
-        const status = credentialStatus[0].status;
+        const statusId = credentialStatus[0].status;
         const statusType = credentialStatus[0].type;
 
-        if (statusType !== 'StatusList2021Credential') {
+        if (statusType !== 'BitstringStatusListCredential') {
           next({
-            message: 'StatusList2021Credential is the only supported status type.',
+            message: 'BitstringStatusListCredential is the only supported status type.',
             code: 400
           });
         }
-        const statusResponse = await revoke(credentialId, status);
+        const statusResponse = await status.updateStatus(credentialId, statusId);
         return res.status(statusResponse.code).send(statusResponse);
       } catch (e) {
         // We catch the async errors and pass them to the error handler.
