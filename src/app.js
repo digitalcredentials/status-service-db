@@ -18,27 +18,7 @@ export async function build(opts = {}) {
   app.use(cors());
 
   app.get('/', function (req, res, next) {
-    res.send({ message: 'status-service-db server status: ok.' });
-  });
-
-  // Get status credential
-  app.get('/:statusCredentialId', async function (req, res, next) {
-    const statusCredentialId = req.params.statusCredentialId;
-    try {
-      const statusCredential = await status.getStatusCredential(statusCredentialId);
-      if (!statusCredential) {
-        next({
-          message: `Unable to find Status Credential with ID "${statusCredentialId}".`,
-          code: 404
-        });
-      }
-      return res.status(200).json(statusCredential);
-    } catch (error) {
-      next({
-        message: error.message,
-        code: error.code
-      });
-    }
+    res.json({ message: 'status-service-db server status: ok.' });
   });
 
   // Allocate status
@@ -52,7 +32,7 @@ export async function build(opts = {}) {
             code: 400
           });
         }
-        const vcWithStatus = await status.allocateAllStatuses(vc);
+        const vcWithStatus = await status.allocateSupportedStatuses(vc);
         return res.json(vcWithStatus);
       } catch (e) {
         // We catch the async errors and pass them to the error handler.
@@ -86,8 +66,8 @@ export async function build(opts = {}) {
             code: 400
           });
         }
-        const statusResponse = await status.updateStatus(credentialId, statusId);
-        return res.status(statusResponse.code).send(statusResponse);
+        const updateStatusResponse = await status.updateStatus(credentialId, statusId);
+        return res.status(updateStatusResponse.code).json(updateStatusResponse);
       } catch (e) {
         // We catch the async errors and pass them to the error handler.
         if (!e.message) {e.message = "Error updating credential status position."}
@@ -96,6 +76,34 @@ export async function build(opts = {}) {
         next({code: 500, ...e});
       }
     });
+
+  // Get credential info
+  app.get('/credentials/:credentialId', async function (req, res, next) {
+    const credentialId = req.params.credentialId;
+    try {
+      const credentialInfo = await status.getCredentialInfo(credentialId);
+      return res.status(200).json(credentialInfo);
+    } catch (error) {
+      next({
+        message: error.message,
+        code: error.code
+      });
+    }
+  });
+
+  // Get status credential
+  app.get('/:statusCredentialId', async function (req, res, next) {
+    const statusCredentialId = req.params.statusCredentialId;
+    try {
+      const statusCredential = await status.getStatusCredential(statusCredentialId);
+      return res.status(200).json(statusCredential);
+    } catch (error) {
+      next({
+        message: error.message,
+        code: error.code
+      });
+    }
+  });
 
   // Attach the error handling middleware calls, in the order that they should run
   app.use(errorLogger);
