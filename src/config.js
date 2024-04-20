@@ -9,9 +9,8 @@ export function setConfig() {
 }
 
 function getBooleanValue(value) {
+  value = value?.toLocaleLowerCase();
   if (
-    value === true ||
-    value === 1 ||
     value === 'true' ||
     value === '1' ||
     value === 'yes' ||
@@ -19,8 +18,6 @@ function getBooleanValue(value) {
   ) {
     return true;
   } else if (
-    value === false ||
-    value === 0 ||
     value === 'false' ||
     value === '0' ||
     value === 'no' ||
@@ -31,22 +28,21 @@ function getBooleanValue(value) {
   return true;
 }
 
-function getGeneralEnvs() {
-  const env = process.env;
+function getGeneralEnvs(env) {
   return {
     port: env.PORT ? parseInt(env.PORT) : defaultPort,
     credStatusService: env.CRED_STATUS_SERVICE,
     credStatusDidSeed: env.CRED_STATUS_DID_SEED,
-    consoleLogLevel: env.CONSOLE_LOG_LEVEL?.toLocaleLowerCase() || defaultConsoleLogLevel,
-    logLevel: env.LOG_LEVEL?.toLocaleLowerCase() || defaultLogLevel,
+    consoleLogLevel: env.CONSOLE_LOG_LEVEL?.toLocaleLowerCase() ?? defaultConsoleLogLevel,
+    logLevel: env.LOG_LEVEL?.toLocaleLowerCase() ?? defaultLogLevel,
     enableAccessLogging: getBooleanValue(env.ENABLE_ACCESS_LOGGING),
+    enableHttpsForDev: getBooleanValue(env.ENABLE_HTTPS_FOR_DEV),
     errorLogFile: env.ERROR_LOG_FILE,
     allLogFile: env.ALL_LOG_FILE
   };
 }
 
-function getMongoDbEnvs() {
-  const env = process.env;
+function getMongoDbEnvs(env) {
   return {
     statusCredSiteOrigin: env.STATUS_CRED_SITE_ORIGIN,
     credStatusDatabaseUrl: env.CRED_STATUS_DB_URL,
@@ -64,16 +60,16 @@ function getMongoDbEnvs() {
 }
 
 function parseConfig() {
-  const env = process.env
+  const env = process.env;
   let serviceSpecificEnvs;
   switch (env.CRED_STATUS_SERVICE) {
     case 'mongodb':
-      serviceSpecificEnvs = getMongoDbEnvs();
+      serviceSpecificEnvs = getMongoDbEnvs(env);
       break;
     default:
-      throw new Error('Encountered unsupported credential status service');
+      throw new Error(`Encountered unsupported credential status service: ${env.CRED_STATUS_SERVICE}`);
   }
-  const generalEnvs = getGeneralEnvs();
+  const generalEnvs = getGeneralEnvs(env);
   const config = Object.freeze({
     ...generalEnvs,
     ...serviceSpecificEnvs

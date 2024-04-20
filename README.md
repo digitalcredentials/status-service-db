@@ -55,6 +55,7 @@ This service provides support for managing credential status in a variety of dat
 | `CRED_STATUS_DID_SEED` | seed used to deterministically generate DID | string | yes |
 | `PORT` | HTTP port on which to run the express app | number | no (default: `4008`) |
 | `ENABLE_ACCESS_LOGGING` | whether to enable access logging (see [Logging](#logging)) | boolean | no (default: `true`) |
+| `ENABLE_HTTPS_FOR_DEV` | whether to enable HTTPS in a development instance of the app | boolean | no (default: `true`) |
 | `ERROR_LOG_FILE` | log file for all errors (see [Logging](#logging)) | string | no |
 | `ALL_LOG_FILE` | log file for everything (see [Logging](#logging)) | string | no |
 | `CONSOLE_LOG_LEVEL` | console log level (see [Logging](#logging)) | `error` \| `warn`\| `info` \| `http` \| `verbose` \| `debug` \| `silly` | no (default: `silly`) |
@@ -210,7 +211,7 @@ NOTE: CURL can get a bit clunky if you want to experiment more (e.g., by changin
 
 ### Revoke
 
-Revocation is fully explained in the Bitstring Status List specification and our implemenations thereof, but effectively, it amounts to POSTing an object to the revocation endpoint, like so:
+Revocation and suspension are fully explained in the [Bitstring Status List](https://www.w3.org/TR/vc-bitstring-status-list/) specification and our implemenations thereof, but effectively, it amounts to POSTing an object to the revocation endpoint, like so:
 
 ```
 {credentialId: '23kdr', credentialStatus: [{type: 'BitstringStatusListCredential', status: 'revoked'}]}

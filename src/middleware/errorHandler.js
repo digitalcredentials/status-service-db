@@ -6,7 +6,7 @@ const errorHandler = (error, request, response, next) => {
   // for more detail
 
   const code = error.code | 500;
-  const message = `An error occurred in status-service-db: ${error.message || 'unknown error.'} See the logs for full details. If you are using docker compose, view the logs with 'docker compose logs', and just the status service logs with: 'docker compose logs status-service-db'`;
+  const message = `An error occurred in status-service-db: ${error.message ?? 'unknown error.'} See the logs for full details. If you are using docker compose, view the logs with 'docker compose logs', and just the status service logs with: 'docker compose logs status-service-db'`;
   const errorResponse = {code, message};
   response.header('Content-Type', 'application/json');
   return response.status(error.code).json(errorResponse);

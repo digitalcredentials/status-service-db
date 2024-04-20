@@ -63,7 +63,7 @@ async function initializeStatusManager(statusManager) {
       STATUS_LIST_MANAGER = await createMongoDbStatusManager();
       break;
     default:
-      throw new Error('Encountered unsupported credential status service');
+      throw new Error(`Encountered unsupported credential status service: ${credStatusService}`);
   }
 }
 
@@ -86,20 +86,20 @@ async function updateStatus(credentialId, credentialStatus) {
     switch (credentialStatus) {
       case 'revoked':
         await statusManager.revokeCredential(credentialId);
-        return { code: 200, message: 'Credential status successfully revoked.' };
+        return { code: 200, message: 'Credential successfully revoked.' };
       case 'suspended':
         await statusManager.suspendCredential(credentialId);
-        return { code: 200, message: 'Credential status successfully suspended.' };
+        return { code: 200, message: 'Credential successfully suspended.' };
       case 'unsuspended':
         await statusManager.unsuspendCredential(credentialId);
-        return { code: 200, message: 'Credential status successfully unsuspended.' };
+        return { code: 200, message: 'Credential successfully unsuspended.' };
       default:
         return { code: 400, message: `Unsupported credential status: "${credentialStatus}"` };
     }
   } catch (error) {
     return {
-      code: error.code || 500,
-      message: error.message ||
+      code: error.code ?? 500,
+      message: error.message ??
         `Unable to apply status "${credentialStatus}" to credential with ID "${credentialId}".`
     };
   }

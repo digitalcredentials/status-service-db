@@ -26,7 +26,7 @@ const level = () => {
   if (logLevel) {
     return logLevel;
   } else {
-    const env = process.env.NODE_ENV || 'development';
+    const env = process.env.NODE_ENV ?? 'development';
     const isDevelopment = env === 'development';
     return isDevelopment ? 'silly' : 'warn';
   }
