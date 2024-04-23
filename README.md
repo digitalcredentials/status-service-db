@@ -12,7 +12,7 @@ IMPORTANT NOTE ABOUT VERSIONING: If you are using a Docker Hub image of this rep
   - [DID Registries](#did-registries)
 - [Usage](#usage)
   - [Allocate Status Position](#allocate-status-position)
-  - [Revoke](#revoke)
+  - [Revocation and suspension](#revocation-and-suspension)
 - [Versioning](#versioning)
 - [Logging](#logging)
   - [Log Levels](#log-levels)
@@ -209,7 +209,7 @@ Now, your next step would be to sign this Verifiable Credential. You could pass 
 
 NOTE: CURL can get a bit clunky if you want to experiment more (e.g., by changing what goes into the VC before signing), so you might consider trying [Postman](https://www.postman.com/downloads) which makes it easier to construct and send HTTP calls.
 
-### Revoke
+### Revocation and suspension
 
 Revocation and suspension are fully explained in the [Bitstring Status List](https://www.w3.org/TR/vc-bitstring-status-list/) specification and our implemenations thereof, but effectively, it amounts to POSTing an object to the revocation endpoint, like so:
 

@@ -2,7 +2,8 @@ import testVC from './testVC.js';
 
 const validCredentialId = 'urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1';
 const invalidCredentialId = 'kj09ij';
-const invalidCredentialIdErrorMessage = `An error occurred in status-service-db: Unable to find credential with ID ${invalidCredentialId}`;
+const invalidCredentialIdErrorMessage = 'An error occurred in status-service-db: ' +
+  `Unable to find credential with ID ${invalidCredentialId}`;
 
 const credentialStatus =  {
     "id": "https://digitalcredentials.github.io/credential-status-jc-test/XA5AAK1PV4#16",

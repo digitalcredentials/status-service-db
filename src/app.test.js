@@ -73,8 +73,8 @@ describe('api', () => {
     });
 
     it('returns unchanged credential when status already set ', async () => {
-      const allocateStatus = sinon.fake.returns(getUnsignedVCWithStatus());
-      const statusManagerStub = { allocateStatus };
+      const allocateSupportedStatuses = sinon.fake.returns(getUnsignedVCWithStatus());
+      const statusManagerStub = { allocateSupportedStatuses };
       await status.initializeStatusManager(statusManagerStub);
       const app = await build();
 
