@@ -47,7 +47,12 @@ export async function build(opts = {}) {
 
   // Update status
   // The body will look like:
-  // {credentialId: '23kdr', credentialStatus: [{type: 'BitstringStatusListCredential', status: 'revoked'}]}
+  /*
+  {
+    "credentialId": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1",
+    "credentialStatus": [{ "type": "BitstringStatusListCredential", "status": "revoked" }]
+  }
+  */
   app.post('/credentials/status',
     async function (req, res, next) {
       try {

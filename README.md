@@ -24,7 +24,7 @@ IMPORTANT NOTE ABOUT VERSIONING: If you are using a Docker Hub image of this rep
 
 ## Summary
 
-A microservice (running as a nodejs express app) that uses a database service to allocate a [status position](https://www.w3.org/TR/vc-bitstring-status-list) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
+A microservice (running as a nodejs express app) that uses a database service to allocate a [status position](https://www.w3.org/TR/vc-bitstring-status-list) for a [Verifiable Credential](https://www.w3.org/TR/vc-data-model-2.0), adds the position to the credential, and returns the credential. The status position can later be used to revoke the credential.
 
 Implements two HTTP endpoints:
 
@@ -97,7 +97,7 @@ This express app can be run a few different ways:
 
 You can now allocate status positions for Verifiable Credentials. Try it out with this cURL command, which you simply paste into the terminal:
 
-```
+```bash
 curl --location 'http://localhost:4008/credentials/status/allocate' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -149,7 +149,7 @@ curl --location 'http://localhost:4008/credentials/status/allocate' \
 
 This should return the same credential but with an allocated status. It should look something like this (it will be all smushed up, but you can format it in something like [JSONLint](https://jsonlint.com)):
 
-```
+```json
 {
     "@context": [
         "https://www.w3.org/ns/credentials/v2",
@@ -222,8 +222,11 @@ NOTE: cURL can get a bit clunky if you want to experiment more (e.g., by changin
 
 Revocation and suspension are fully explained in the [Bitstring Status List](https://www.w3.org/TR/vc-bitstring-status-list/) specification and our implemenations thereof, but effectively, it amounts to POSTing an object to the revocation endpoint, like so:
 
-```
-{credentialId: '23kdr', credentialStatus: [{type: 'BitstringStatusListCredential', status: 'revoked'}]}
+```json
+{
+  "credentialId": "urn:uuid:951b475e-b795-43bc-ba8f-a2d01efd2eb1",
+  "credentialStatus": [{ "type": "BitstringStatusListCredential", "status": "revoked" }]
+}
 ```
 
 Fundamentally, you are just posting up the ID of the credential.
@@ -262,17 +265,21 @@ Logging is configured with environment variables, as defined in the [Environment
 
 By default, everything is logged to the console (log level `silly`).
 
-You may set the log level for the application as whole, e.g.,
+You may set the log level for the application as a whole. For example:
 
-```LOG_LEVEL=http```
+```
+LOG_LEVEL=http
+```
 
 Which would only log messages with severity `http` and all below it (`info`, `warn`, `error`).
 
 The default is to log everything (level `silly`).
 
-You can also set the log level for console logging, e.g.,
+You can also set the log level for console logging. For example:
 
-```CONSOLE_LOG_LEVEL=debug```
+```
+CONSOLE_LOG_LEVEL=debug
+```
 
 This would log everything for severity `debug` and lower (i.e., `verbose`, `http`, `info`, `warn`, `error`). This of course assumes that you've set the log level for the application as a whole to at least the same level.
 
@@ -283,7 +290,7 @@ There are also two log files that can be enabled:
 - errors (only logs errors)
 - all (logs everything - all log levels)
 
-Enable each log by setting an env variable for each, indicating the path to the appropriate file, like this example:
+Enable each log by setting an environment variable for each, indicating the path to the appropriate file, like this example:
 
 ```
 ERROR_LOG_FILE=logs/error.log
@@ -308,7 +315,7 @@ To enable access logging, set `ENABLE_ACCESS_LOGGING` to `true`.
 
 Clone code then cd into directory and:
 
-```
+```bash
 npm install
 npm run dev
 ```
@@ -317,7 +324,9 @@ npm run dev
 
 Testing uses `mocha` and `supertest` to test the endpoints. To run tests:
 
-```npm run test```
+```bash
+npm run test
+```
 
 Because `status-service-db` uses database services to manage status, calls are made out to HTTP API endpoints during issuance. Rather than making these calls for every test, and possibly in cases where outgoing HTTP calls aren't ideal, we've mocked the `@digitalcredentials/credential-status-manager-db` package.
 
