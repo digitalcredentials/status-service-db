@@ -95,7 +95,7 @@ This express app can be run a few different ways:
 
 ### Allocate Status Position
 
-You can now allocate status positions for verifiable credentials. Try it out with this CURL command, which you simply paste into the terminal:
+You can now allocate status positions for Verifiable Credentials. Try it out with this cURL command, which you simply paste into the terminal:
 
 ```
 curl --location 'http://localhost:4008/credentials/status/allocate' \
@@ -195,19 +195,28 @@ This should return the same credential but with an allocated status. It should l
         },
         "name": "Jane Doe"
     },
-    "credentialStatus": {
-        "id": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB#5",
+    "credentialStatus": [
+      {
+        "id": "https://digitalcredentials.github.io/credential-status-jc-test/XA5AAK1PV4#2",
         "type": "BitstringStatusListEntry",
         "statusPurpose": "revocation",
+        "statusListIndex": 2,
+        "statusListCredential": "https://digitalcredentials.github.io/credential-status-jc-test/XA5AAK1PV4"
+      },
+      {
+        "id": "https://digitalcredentials.github.io/credential-status-jc-test/DKSPRCX9WB#5",
+        "type": "BitstringStatusListEntry",
+        "statusPurpose": "suspension",
         "statusListIndex": 5,
-        "statusListCredential": "https://jchartrand.github.io/status-test-three/DKSPRCX9WB"
-    }
+        "statusListCredential": "https://digitalcredentials.github.io/credential-status-jc-test/DKSPRCX9WB"
+      }
+    ]
 }
 ```
 
 Now, your next step would be to sign this Verifiable Credential. You could pass the VC (with its newly allocated status position) to the [DCC signing-service](https://github.com/digitalcredentials/signing-service), which will sign and return the signed copy. To see how this is can all be coordinated, take a look at the [DCC issuer-coordinator](https://github.com/digitalcredentials/issuer-coordinator).
 
-NOTE: CURL can get a bit clunky if you want to experiment more (e.g., by changing what goes into the VC before signing), so you might consider trying [Postman](https://www.postman.com/downloads) which makes it easier to construct and send HTTP calls.
+NOTE: cURL can get a bit clunky if you want to experiment more (e.g., by changing what goes into the VC before signing), so you might consider trying [Postman](https://www.postman.com/downloads) which makes it easier to construct and send HTTP calls.
 
 ### Revocation and suspension
 
