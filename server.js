@@ -1,5 +1,6 @@
 import { build } from './src/app.js';
 import { getConfig } from './src/config.js';
+import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import logger from './src/utils/logger.js';

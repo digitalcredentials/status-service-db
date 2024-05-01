@@ -85,11 +85,12 @@ This express app can be run a few different ways:
 - <sup>2</sup> directly from the Docker Hub image: `docker run -dp 4008:4008 digitalcredentials/status-service-db:0.1.0`
 - <sup>2</sup> with Docker Compose - see how we do that in the [DCC issuer-coordinator](https://github.com/digitalcredentials/issuer-coordinator)
 
-<sup>1</sup> In order for credential status verification to work, you will need to use a publicly accessible URL for `STATUS_CRED_SITE_ORIGIN`, so that the verifier can access the status data. If you would like to spin up this service at a public URL, consider using a traffic forwarding tool like [localtunnel](https://www.npmjs.com/package/localtunnel). Once you have installed it, follow these simple steps to run the service:
-1. Run `lt --port $PORT`
+<sup>1</sup> In order for credential status verification to work, you will need to use a publicly accessible URL for `STATUS_CRED_SITE_ORIGIN`, so that the verifier can access the status data. If you would like to spin up this service at a public URL, consider using a traffic forwarding tool like [localtunnel](https://www.npmjs.com/package/localtunnel). After you have installed it on your computer with `npm install -g localtunnel`, please follow these simple steps to run the service:
+
+1. Run `npm run lt` (assuming you have already set the `PORT` environment variable)
 2. Visit the URL that is logged to the terminal and enter the tunnel password (typically your public IP address, which can be found at sites like [ip.me](https://ip.me))
-3. Set `STATUS_CRED_SITE_ORIGIN` to the logged URL from Step 2 (be sure to also configure all other required environment variables)
-4. Run `npm start` (assuming you already ran `npm install`)
+3. Set the `STATUS_CRED_SITE_ORIGIN` environment variable to the URL generated from Step 2 (be sure to also configure all other required environment variables)
+4. Run `npm start` (assuming you have already run `npm install`)
 
 <sup>2</sup> Note that to run this with Docker, you'll of course need to install Docker, which is very easy with the [Docker installers for Windows, Mac, and Linux](https://docs.docker.com/engine/install).
 

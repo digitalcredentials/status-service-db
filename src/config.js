@@ -8,24 +8,26 @@ export function setConfig() {
   CONFIG = parseConfig();
 }
 
-function getBooleanValue(value) {
+function getBooleanValue(value, defaultValue=true) {
   value = value?.toLocaleLowerCase();
   if (
     value === 'true' ||
-    value === '1' ||
+    value === 't' ||
     value === 'yes' ||
-    value === 'y'
+    value === 'y' ||
+    value === '1'
   ) {
     return true;
   } else if (
     value === 'false' ||
-    value === '0' ||
+    value === 'f' ||
     value === 'no' ||
-    value === 'n'
+    value === 'n' ||
+    value === '0'
   ) {
     return false;
   }
-  return true;
+  return defaultValue;
 }
 
 function getGeneralEnvs(env) {
