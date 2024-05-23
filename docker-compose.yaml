@@ -1,0 +1,8 @@
+version: '3.5'
+services:
+  status:
+    image: digitalcredentials/status-service-db:0.1.0
+    env_file:
+      - ./.status-service-db.env
+    ports:
+      - "4008:4008"
