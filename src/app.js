@@ -32,7 +32,7 @@ export async function build(opts = {}) {
             code: 400
           });
         }
-        const vcWithStatus = await status.allocateSupportedStatuses(vc);
+        const vcWithStatus = await status.allocateRevocationStatus(vc);
         return res.json(vcWithStatus);
       } catch (e) {
         // We catch the async errors and pass them to the error handler.

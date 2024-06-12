@@ -72,11 +72,11 @@ async function getStatusManager() {
   return STATUS_LIST_MANAGER;
 }
 
-async function allocateSupportedStatuses(verifiableCredential) {
+async function allocateRevocationStatus(verifiableCredential) {
   const statusManager = await getStatusManager();
   const result = verifiableCredential.credentialStatus ?
     verifiableCredential :
-    await statusManager.allocateSupportedStatuses(verifiableCredential);
+    await statusManager.allocateRevocationStatus(verifiableCredential);
   return result;
 }
 
@@ -118,7 +118,7 @@ async function getStatusCredential(statusCredentialId) {
 export default {
   initializeStatusManager,
   getStatusManager,
-  allocateSupportedStatuses,
+  allocateRevocationStatus,
   updateStatus,
   getCredentialInfo,
   getStatusCredential
