@@ -1,23 +1,19 @@
-# Stage 1 - Gather dependencies
-#FROM node:19 AS deps
-#COPY . .
-#RUN npm ci
-
-# Stage 2 - Runner
-#FROM node:20-alpine as runner
-FROM node:20
-# RUN git config --global url."https://github.com/".insteadOf 'git@github.com:'
-# RUN git config --global url."https://github.com/".insteadOf git@github.com:
-# RUN git config --global url."https://".insteadOf git://
-#RUN git config --global url."https://github.com/".insteadOf ssh://git@github.com
-# RUN git config --global url."https://github.com".insteadOf "ssh://git@github.com"
-# NOTE to self: I got this to work (i.e., fixed the problem with the docker build
-# not being able to pull the status dependency -
-# digitalcredentials/credential-status-manager-db#initial-implementation 
-# from git ) by instead pulling in the dependency locally so it gets copied
-# directly into the docker build as part of copying in all of the local node_modules.  
-# I also therefore had to remove node_moduels from the dockerignore
+FROM node:19 as builder
+ADD . /app
+ENV NODE_ENV=production
 WORKDIR /app
-COPY . .
-CMD ["node", "server.js"]
-EXPOSE 4008
+RUN npm install 
+
+FROM gcr.io/distroless/nodejs18-debian11
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/server.js /app/server.js
+COPY --from=builder /app/src /app/src
+COPY --from=builder /app/package.json /app/package.json
+
+# COPY --from=builder /app/healthcheck.js /app/healthcheck.js
+# The healthcheck can be run from here, but also from the compose file
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD ["/nodejs/bin/node", "app/healthcheck.js"]
+
+CMD ["app/server.js"]
+
+EXPOSE 4006
