@@ -35,6 +35,8 @@ export async function build(opts = {}) {
         const vcWithStatus = await status.allocateRevocationStatus(vc);
         return res.json(vcWithStatus);
       } catch (e) {
+        
+        console.log(e)
         // We catch the async errors and pass them to the error handler.
         if (!e.message) {
           e.message = 'Unable to allocate status position.'
