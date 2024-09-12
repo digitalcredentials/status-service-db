@@ -1,2 +1,6 @@
 **/*.env
 node_modules
+compose.yaml
+compose-local-mongo.yaml
+localtunnel.sh
+README.md
