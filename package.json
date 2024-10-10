@@ -1,6 +1,6 @@
 {
   "name": "@digitalcredentials/status-service-db",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config server.js",
